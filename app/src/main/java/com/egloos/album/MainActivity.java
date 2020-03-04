@@ -1,9 +1,5 @@
 package com.egloos.album;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,12 +11,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.egloos.album.R;
 import com.pedro.library.AutoPermissions;
 import com.pedro.library.AutoPermissionsListener;
 
 import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity implements AutoPermissionsListener {
+
     ImageView imageView;
 
     @Override
@@ -39,12 +39,9 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
         });
 
         AutoPermissions.Companion.loadAllPermissions(this, 101);
-
     }
 
-
-
-    public void openGallery(){
+    public void openGallery() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -56,18 +53,19 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 101){
-            if (requestCode == RESULT_OK){
+        if(requestCode == 101) {
+            if(resultCode == RESULT_OK) {
                 Uri fileUri = data.getData();
 
                 ContentResolver resolver = getContentResolver();
-                try{
+
+                try {
                     InputStream instream = resolver.openInputStream(fileUri);
-                    Bitmap imgbitmap = BitmapFactory.decodeStream(instream);
-                    imageView.setImageBitmap(imgbitmap);
+                    Bitmap imgBitmap = BitmapFactory.decodeStream(instream);
+                    imageView.setImageBitmap(imgBitmap);
 
                     instream.close();
-                } catch (Exception e){
+                } catch(Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -75,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         AutoPermissions.Companion.parsePermissions(this, requestCode, permissions, this);
     }
@@ -89,6 +88,6 @@ public class MainActivity extends AppCompatActivity implements AutoPermissionsLi
     @Override
     public void onGranted(int requestCode, String[] permissions) {
         Toast.makeText(this, "permissions granted : " + permissions.length, Toast.LENGTH_LONG).show();
-
     }
+
 }
